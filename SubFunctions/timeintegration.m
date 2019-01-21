@@ -1,4 +1,4 @@
-function [fail,disp,stretch,nodeDisplacement,timeStepTracker,equilibriumStateAverage,NT]=timeintegration(BONDLIST,COORDINATES,UNDEFORMEDLENGTH,BONDTYPE,BFMULTIPLIER,BONDSTIFFNESS,VOLUMECORRECTIONFACTORS,BODYFORCE,DENSITY,CONSTRAINTFLAG)
+function [fail,disp,stretch,nodeDisplacement,timeStepTracker,equilibriumStateAverage,NT]=timeintegration(BONDLIST,COORDINATES,UNDEFORMEDLENGTH,BONDTYPE,BFMULTIPLIER,BONDSTIFFNESS,VOLUMECORRECTIONFACTORS,BODYFORCE,DENSITY,CONSTRAINTFLAG,bodyforceMultiplier)
 % Time integration using a Forward Difference (FD) Backward Difference (BD) scheme (FD_BD)
 
 %% Constants
@@ -10,6 +10,8 @@ datasimulationparameters
 
 nBONDS=size(BONDLIST,1);
 nNODES=size(COORDINATES,1);
+
+MAXBODYFORCE=MAXBODYFORCE*bodyforceMultiplier;
 
 %% Initialise 
 fail=zeros(nBONDS,1)+1;                      
@@ -64,7 +66,6 @@ for tt=timeStepTracker:NT
 %     if mod(tt,2500)==0
 %        save(['D:\PhD\2 Code\BB_PD\Output\Workspace_snapshot_',num2str(tt),'.mat']); % Save workspace to local computer every 2500 time steps
 %     end
-
 
 end
 

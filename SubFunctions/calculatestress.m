@@ -21,13 +21,17 @@ if NOD==3
            G=G_STEEL;
         end
         
+        % For more info on the factor of 2 used in stressXY,stressXZ and
+        % stressYZ, see the following link:
+        % http://solidmechanics.org/text/Chapter3_2/Chapter3_2.htm
+        
         stressXX=EM*((1-v)*strainTensor(i,1,1)+v*strainTensor(i,2,2)+v*strainTensor(i,3,3));
-        stressXY=G*strainTensor(i,1,2);
-        stressXZ=G*strainTensor(i,1,3);
+        stressXY=G*2*strainTensor(i,1,2);
+        stressXZ=G*2*strainTensor(i,1,3);
 
         stressYX=stressXY;
         stressYY=EM*(v*strainTensor(i,1,1)+(1-v)*strainTensor(i,2,2)+v*strainTensor(i,3,3));
-        stressYZ=G*strainTensor(i,2,3);
+        stressYZ=G*2*strainTensor(i,2,3);
 
         stressZX=stressXZ;
         stressZY=stressYZ;

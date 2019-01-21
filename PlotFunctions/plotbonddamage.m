@@ -20,7 +20,7 @@ ylabel(h, 'Damage')
 
 %% 2D cross-section view - plot cross section of damage data
 
-crossSectionFlag=(COORDINATES(:,2)==DX*4)==1;   % Identify and flag nodes located in cross-section
+crossSectionFlag=(COORDINATES(:,2)==DX*4)==1;   % Identify and flag nodes located in cross-section (X-Z Plane)
 
 coordCrossSection=COORDINATES(:,:);
 dispCrossSection=disp(:,:);

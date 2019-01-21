@@ -14,31 +14,33 @@ MATERIALFLAG=zeros(nNODES,1);       % Create flag to identify steel and concrete
 
 % Bar 1
 for i=((nDIVX*363)+1):(nDIVX*365)
-   MATERIALFLAG(i,1)=0; 
+   MATERIALFLAG(i,1)=1; 
 end
 for i=((nDIVX*378)+1):(nDIVX*380)
-   MATERIALFLAG(i,1)=0; 
+   MATERIALFLAG(i,1)=1; 
 end
 for i=((nDIVX*393)+1):(nDIVX*395)
-   MATERIALFLAG(i,1)=0; 
+   MATERIALFLAG(i,1)=1; 
 end
 
 % Bar 2
 for i=((nDIVX*370)+1):(nDIVX*372)
-   MATERIALFLAG(i,1)=0; 
+   MATERIALFLAG(i,1)=1; 
 end
 for i=((nDIVX*385)+1):(nDIVX*387)
-   MATERIALFLAG(i,1)=0; 
+   MATERIALFLAG(i,1)=1; 
 end
 for i=((nDIVX*400)+1):(nDIVX*402)
-   MATERIALFLAG(i,1)=0; 
+   MATERIALFLAG(i,1)=1; 
 end
 
 %% Application of body force
 
 BODYFORCE=zeros(nNODES,NOD);
+bodyforceCounter=0;
 for i=nDIVX:nDIVX:nNODES
     BODYFORCE(i,3)=1;
+    bodyforceCounter=bodyforceCounter+1;
 end
 
 %% Apply constraints to member

@@ -2,18 +2,21 @@
 % MAIN file for Bond Based Peridynamic Analysis (BB_PD) code using bond lists
 % ---------------------------------------------------------------------------
 
-%% Workspace set-up
+%% Clear the workspace
 clear variables
 close all
 clc
-pwd; % Identify current folder
-currentFolder=pwd;
+
+%% Workspace set-up
+currentFolder=pwd; % Identify current folder
 subFolder1='/InputData';
 subFolder2='/SubFunctions';
 subFolder3='/PlotFunctions';
+subFolder4='/Output';
 addpath(strcat(currentFolder,subFolder1));
 addpath(strcat(currentFolder,subFolder2));
 addpath(strcat(currentFolder,subFolder3));
+addpath(strcat(currentFolder,subFolder4));
 
 %% Start simulation timing
 startTiming=tic;
@@ -22,6 +25,7 @@ startTiming=tic;
 tic
 [COORDINATES]=buildmaterialpointcoordinates(); 
 databoundaryconditions;
+datasimulationparameters;
 inputdataTiming=toc;
 fprintf('Input data complete in %fs \n', inputdataTiming)
 
@@ -45,11 +49,33 @@ fprintf('Bond type and stiffness complete in %fs \n', buildbonddataTiming)
 
 %% Time integration
 tic
-[fail,disp,stretch,nodeDisplacement,timeStepTracker,equilibriumStateAverage,NT]=timeintegration(BONDLIST,COORDINATES,UNDEFORMEDLENGTH,BONDTYPE,BFMULTIPLIER,BONDSTIFFNESS,VOLUMECORRECTIONFACTORS,BODYFORCE,DENSITY,CONSTRAINTFLAG);
+for bodyforceMultiplier=1:1%1:0.025:1.4
+    
+    [fail,disp,stretch,nodeDisplacement,timeStepTracker,equilibriumStateAverage,NT]=timeintegration(BONDLIST,COORDINATES,UNDEFORMEDLENGTH,BONDTYPE,BFMULTIPLIER,BONDSTIFFNESS,VOLUMECORRECTIONFACTORS,BODYFORCE,DENSITY,CONSTRAINTFLAG,bodyforceMultiplier);
+    
+    % Save output
+    pointLoad=-MAXBODYFORCE*bodyforceCounter*VOLUME*bodyforceMultiplier;
+    outputDestination=strcat(pwd,'/Output/'); % Determine output destination folder
+    dateFormat='yyyymmdd';
+    baseFileName=sprintf('Output_JobID_%s_1_%.0fN.mat',datestr(now,dateFormat),pointLoad);
+    fullFileName=fullfile(outputDestination,baseFileName);
+    jobNumberSuffix=2; % Start at 2. First file is saved above
+
+    if isfile(fullFileName)  % File exists
+
+        baseFileName=sprintf('Output_JobID_%s_%d_%.0fN.mat',datestr(now,dateFormat),jobNumberSuffix,pointLoad);
+        fullFileName=fullfile(outputDestination,baseFileName);
+
+        % Prepare for next time, in case this name also exists
+        jobNumberSuffix=jobNumberSuffix + 1;
+
+    end % File does not exist
+
+    save(fullFileName); % Save workspace
+    
+end
 timeintegrationTiming=toc;
 fprintf('Time integration complete in %fs \n', timeintegrationTiming)
-
-save([pwd,'/Output/Workspace_snapshot_',date,'.mat']); % Save workspace
 
 %% Complete simulation timing
 simulationTiming=toc(startTiming); 
@@ -74,6 +100,9 @@ plotstrain(COORDINATES,disp,straintensor);
 [stresstensor]=calculatestress(nNODES,NOD,straintensor,MATERIALFLAG);
 plotstress(COORDINATES,disp,stresstensor);
 
+plotstressdistribution(COORDINATES,DX,stresstensor);
+
 %% Output simulation data
 
 %% Additional time
+
