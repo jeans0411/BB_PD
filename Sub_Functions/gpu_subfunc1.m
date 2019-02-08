@@ -5,13 +5,13 @@ BforceX=BFmultiplier*fail*const*Stretch*Volume*fac*(Xdeformed/DeformedLength);
 BforceY=BFmultiplier*fail*const*Stretch*Volume*fac*(Ydeformed/DeformedLength);
 BforceZ=BFmultiplier*fail*const*Stretch*Volume*fac*(Zdeformed/DeformedLength);
 
-while fail==1 && BondType==2 && Stretch>Critical_ts_steel_elastic
+if fail==1 && BondType==2 && Stretch>Critical_ts_steel_elastic
     BforceX=BforceX*Critical_ts_steel_elastic/Stretch;
     BforceY=BforceY*Critical_ts_steel_elastic/Stretch;
     BforceZ=BforceZ*Critical_ts_steel_elastic/Stretch;
 end
 
-while fail==1 && BondType==2 && Stretch>0.01
+if fail==1 && BondType==2 && Stretch>0.01
     BforceX=BforceX*2.5*(Stretch-0.01)/(Critical_ts_steel-0.01);
     BforceY=BforceY*2.5*(Stretch-0.01)/(Critical_ts_steel-0.01);
     BforceZ=BforceZ*2.5*(Stretch-0.01)/(Critical_ts_steel-0.01);
